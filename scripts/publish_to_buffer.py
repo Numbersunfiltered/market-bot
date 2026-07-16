@@ -84,6 +84,7 @@ def main():
             "mode": "customScheduled",
             "dueAt": due_at,
             "assets": [{"image": {"url": image_url}}],
+            "metadata": {"instagram": {"type": "post"}},
         }
     }
 
