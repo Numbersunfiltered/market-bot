@@ -2,12 +2,8 @@ name: Daily US Market Instagram Post
 
 on:
   schedule:
-    # Runs at 12:15 UTC = 5:15 AM PDT (summer) / 4:15 AM PST (winter).
-    # GitHub Actions cron is UTC-only and doesn't shift for daylight saving,
-    # so during PST months (winter) this will fire ~1hr earlier than in PDT
-    # months. See README.md for how to adjust twice a year.
     - cron: "15 12 * * *"
-  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab to test
+  workflow_dispatch: {}
 
 jobs:
   post:
@@ -36,9 +32,8 @@ jobs:
         run: |
           git config user.name "market-bot"
           git config user.email "market-bot@users.noreply.github.com"
-          git fetch origin main
-          git reset --hard origin/main
           git add posts/
+          git status --short
           git commit -m "Daily post $(date -u +%Y-%m-%d)" || echo "Nothing to commit"
           git push origin HEAD:main
 
