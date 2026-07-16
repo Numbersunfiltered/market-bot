@@ -33,12 +33,13 @@ jobs:
       - name: Render Instagram image
         run: python scripts/generate_image.py
 
-      - name: Commit and push generated post
+     - name: Commit and push generated post
         run: |
           git config user.name "market-bot"
           git config user.email "market-bot@users.noreply.github.com"
           git add posts/
           git commit -m "Daily post $(date -u +%Y-%m-%d)" || echo "Nothing to commit"
+          git pull --rebase --autostash origin main
           git push
 
       - name: Publish to Instagram via Buffer
