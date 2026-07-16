@@ -21,18 +21,23 @@ import os
 import json
 import sys
 import requests
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 BUFFER_GRAPHQL_URL = "https://api.buffer.com/graphql"
 
 
 def get_due_at_utc():
-    """Build today's scheduled publish time in the 5:30-6:30 AM PT window, as UTC ISO8601."""
+    """Build the scheduled publish time in the 5:30-6:30 AM PT window, as UTC ISO8601.
+    If that time has already passed today (e.g. when testing manually in the
+    afternoon), schedule for tomorrow instead so Buffer doesn't reject it."""
     hour = int(os.environ.get("POST_HOUR_PT", "6"))
     minute = int(os.environ.get("POST_MINUTE_PT", "0"))
     pt = ZoneInfo("America/Los_Angeles")
-    local_dt = datetime.now(pt).replace(hour=hour, minute=minute, second=0, microsecond=0)
+    now_pt = datetime.now(pt)
+    local_dt = now_pt.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    if local_dt <= now_pt:
+        local_dt = local_dt + timedelta(days=1)
     utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
     return utc_dt.strftime("%Y-%m-%dT%H:%M:%S.000Z")
 
