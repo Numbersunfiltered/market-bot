@@ -78,7 +78,7 @@ def main():
             "schedulingType": "automatic",
             "mode": "customScheduled",
             "dueAt": due_at,
-            "media": [{"url": image_url, "type": "image"}],
+            "assets": [{"image": {"url": image_url}}],
         }
     }
 
